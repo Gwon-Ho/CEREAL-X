@@ -48,7 +48,7 @@
 ## 3. 주요 기능 (Core Features)
 
 ### 3.1 고객 인식 및 음성 주문 처리
-<img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/2dd71ea1-744b-48e2-8b5c-9d1abe743dae" 
+<img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/2dd71ea1-744b-48e2-8b5c-9d1abe743dae"/>
   
 - 키오스크 앞 영역에서 **YOLO 기반 사람 검출**을 수행.
 - 사람이 감지되면:
