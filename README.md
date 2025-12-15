@@ -25,19 +25,10 @@
 ## 2. 시스템 구성 (System Architecture)
 
 ### 2.1 하드웨어 구성
-
-- **협동로봇:** Doosan Robotics E0509
-- **그리퍼:** 전류 피드백 지원 전동 그리퍼 (Modbus 통신)
-- **카메라:**
-  - 시리얼 제조 테이블 상부 RGB-D 카메라 (Depth + RGB)
-  - 키오스크 주변 RGB 카메라 (고객 인식)
-- **컴퓨팅:**
-  - ROS2 기반 메인 컨트롤 PC
-  - LLM API 연동용 클라이언트 (Python)
-
----
+<img width="1280" height="720" alt="Image" src="https://github.com/user-attachments/assets/f0f17613-b35e-417b-ac5f-bc5ea34aa5ac" />
 
 ### 2.2 소프트웨어 구성
+<img width="1280" height="720" alt="Image" src="https://github.com/user-attachments/assets/7fd34d4b-4568-49a8-a694-9327ad0a9c0d" />
 
 - **ROS2 (Humble/Foxy 등)**  
   - 주문 시퀀스 제어 노드
@@ -51,21 +42,20 @@
   - Modbus RTU/TCP: 그리퍼 전류값 읽기 및 제어
   - ROS2 Topic / Service / Action: 로봇 상태 및 시퀀스 관리
 - **음성 입출력**
-  - STT(Speech-to-Text): 고객 음성 → 텍스트 변환
-  - TTS(Text-to-Speech): LLM 응답 → 안내 음성 출력
-
+  - openAI realtimeGPT api기반 실시간 대화형 주문 
 ---
 
 ## 3. 주요 기능 (Core Features)
 
 ### 3.1 고객 인식 및 음성 주문 처리
-
+<img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/2dd71ea1-744b-48e2-8b5c-9d1abe743dae" 
+  
 - 키오스크 앞 영역에서 **YOLO 기반 사람 검출**을 수행.
 - 사람이 감지되면:
   - 카메라 이미지 + 상황 정보를 LLM API로 전달
-  - “처음 방문인지 / 컵을 들고 있는지 / 대략적인 동선” 등을 추론
-  - LLM이 생성한 안내 멘트를 TTS로 출력
-- 이후 **음성 기반 주문(STT + LLM)** 으로 메뉴 선택 및 옵션 지정.
+  - “ 개인 컵 소지 유무 / 연령대 및 성별” 등을 추론
+  - LLM이 생성한 안내 멘트 출력
+- 이후 **음성 기반 주문(realtime api)** 으로 메뉴 선택 및 옵션 지정.
 
 ---
 
@@ -84,6 +74,7 @@
 ---
 
 ### 3.3 컵 유무/위치 인식 및 중복 서빙 방지
+<img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/a9b64a25-3837-4220-80ec-ff47f71ef8fc" />
 
 - Depth + YOLO 기반으로 **픽업 위치의 컵 유무 및 위치/자세를 인식.**
 - 로봇 제조 시퀀스 중:
@@ -92,11 +83,10 @@
 - 이를 통해:
   - **중복 서빙 방지**
   - **로봇-컵 충돌 리스크 감소**
-
 ---
 
 ### 3.4 작업 공간 모니터링 및 Idle-State Cleaning
-
+<img width="597" height="368" alt="Image" src="https://github.com/user-attachments/assets/7c014f26-930f-459d-89ac-5181cdc9260c" />
 - 로봇이 작업 중이 아닐 때(Idle)에는  
   **포인트 클라우드 기반 테이블(WS) 감시 모드**로 전환.
 
@@ -106,24 +96,22 @@
   3. 새 물체가 일정 시간 이상 존재하면 “정리 대상”으로 판단
   4. LLM/VLM을 통해 물체 종류를 추론 (컵, 쓰레기 등)
   5. 미리 정의된 정리 동작(Trash bin, 정리 위치 등)으로 로봇이 이동하여 치우기
+<img width="400" height="400" alt="Image" src="https://github.com/user-attachments/assets/c7393e9d-2f20-466f-ae31-2348d15b2882" />
 
 - 테스트 환경 기준:
   - **새 물체 감지 및 정리 시퀀스 성공률 ~95%** 수준으로 동작.
-
 ---
 
 ### 3.5 적응형 그리핑 (Adaptive Grasping)
 
-- 그리퍼는 **최대 개구 위치를 미리 지정하지 않고**,  
-  “잡기/놓기” 명령만 전달하는 방식으로 동작.
+- 그리퍼는 **“잡기/놓기” 명령만 전달하는 방식으로 동작.**,  
 - 내부 구현:
   - Modbus를 통해 그리퍼 내부 RAM의 **전류 RAW 데이터**를 직접 읽음
   - 수신한 바이트 배열을 decimal 값으로 파싱
   - 전류 변화량이 임계값 이상이면 “물체 접촉/파지 완료”로 판단
 - 이를 통해:
   - 물체 크기와 상관없이 **하나의 그리핑 로직으로 다양한 컵을 파지** 가능
-  - 로봇 모델 변경 없이도 유연한 그리핑 제어 가능
-
+  - 유연한 그리핑 제어 가능
 ---
 
 ### 3.6 LLM-to-Robot 인터페이스
@@ -141,14 +129,13 @@
 ## 4. 동작 시나리오 (Operation Flow)
 
 1. 고객이 키오스크 앞에 서면 카메라가 사람을 인식.
-2. LLM이 상황을 분석하고, TTS로 인사 및 주문 안내 멘트 출력.
-3. 고객 음성을 STT → LLM → 메뉴/옵션 파싱.
+2. LLM이 상황을 분석하고, 인사 및 주문 안내 멘트 출력.
+3. 고객 음성 → LLM → 메뉴/옵션 파싱.
 4. 주문 확정 후, ROS2 기반 제조 시퀀스 시작.
 5. 픽업 존에 기존 컵이 있는 경우:
-   - 시퀀스 중단 및 안내 멘트 출력.
+   - 시퀀스 중단.
 6. 유휴 시간에는 테이블 위 잔여 컵/쓰레기 감지:
    - 감지 → 분류 → 로봇이 정리 동작 수행.
-
 ---
 
 ## 5. 실험 및 성과 (Results)
