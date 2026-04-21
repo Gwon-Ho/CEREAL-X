@@ -194,7 +194,7 @@ stateDiagram-v2
 ### 2-2. Motion Control 내부 상태
 
 ```mermaid
-stateDiagram-v2
+stateDiagram
     [*] --> RobotInit
     RobotInit --> Ready: robot autonomous mode and gripper initialized
     RobotInit --> NotReady: init failed
@@ -447,7 +447,7 @@ wait_for_contact(axis, min_force, max_force, timeout):
 
 제가 준비한 코드는 ROS2 기반 무인 시리얼 카페 로봇 시스템입니다. 구조적으로는 주문 입력, 워크플로우 관리, 비전 판단, 저울 피드백, 실제 모션 제어를 노드 단위로 분리했습니다.
 
-핵심 노드인 `network_manager_v6.py`는 전체 작업 흐름을 관리합니다. 주문이 들어오면 컵 종류, 좌석, 목표 무게를 파싱하고, 개인컵인 경우 비전 노드에 좌표 탐지를 요청합니다. 이후 안정화된 좌표와 저울 값을 확인한 뒤, `RunMotion` 액션으로 모션 제어 노드에 단위 동작을 요청합니다.
+핵심 노드인 `network_manager.py`는 전체 작업 흐름을 관리합니다. 주문이 들어오면 컵 종류, 좌석, 목표 무게를 파싱하고, 개인컵인 경우 비전 노드에 좌표 탐지를 요청합니다. 이후 안정화된 좌표와 저울 값을 확인한 뒤, `RunMotion` 액션으로 모션 제어 노드에 단위 동작을 요청합니다.
 
 `motion_control_6.py`는 실제 로봇 동작을 담당합니다. 각 모션을 함수 단위로 나누고, `movej`, `movel`, `movejx` 같은 명령은 완료 대기와 timeout을 포함한 wrapper로 실행했습니다. 각 단계에서는 feedback을 발행하고, 실패나 취소가 발생하면 action result로 상위 노드가 알 수 있도록 했습니다.
 
