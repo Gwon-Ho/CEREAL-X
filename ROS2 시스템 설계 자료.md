@@ -122,8 +122,8 @@ flowchart TB
 |---|---|---|---|---|
 | 주문 입력 | `/dsr01/kiosk/order` | Kiosk / Voice Node | Network Manager | 사용자 입력과 로봇 실행 로직 분리 |
 | 모션 요청 | `RunMotion` Action | Network Manager | Motion Control | 장시간 모션의 진행 상태와 결과 추적 |
-| 컵 감지 요청 | `/check_cup`, `/call_cup_stable_coordinates` | Network Manager | Cup Detection | 필요한 시점에만 비전 판단 활성화 |
-| 컵 상태 응답 | `/cup_detections/*` | Cup Detection | Network Manager | 픽업 위치 점유 여부 판단 |
+| 개인 컵 감지 요청 | `/check_cup`, `/call_cup_stable_coordinates` | Network Manager | Cup Detection | 필요한 시점에만 비전 판단 활성화 |
+| 픽업 존 컵 유무 | `/cup_detections/*` | Cup Detection | Network Manager | 픽업 위치 점유 여부 판단 |
 | 개인컵 좌표 | `/cup_stable_coordinates` | Cup Detection | Network Manager / Motion Control | 안정화된 좌표만 모션 제어에 사용 |
 | 무게 측정 | `/weight/scale_*` | Scale | Network Manager | 컵 기준 무게와 시리얼 목표량 계산 |
 | 토출 완료 신호 | `/dsr01/weight_ok` | Network Manager | Motion Control | 목표 무게 도달 시 토출 루프 종료 |
